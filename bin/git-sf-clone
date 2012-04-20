@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ORGID=$1
+
+metaforce clone

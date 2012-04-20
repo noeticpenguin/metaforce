@@ -15,13 +15,13 @@ class MetaForce < Thor
 			say "Using stored login information"
 			@login_details = LoginDetails.load
 		else
-			login_email 			= ask "Login Email address: "
-			sandbox					= yes? "Is this a sandbox org login: "
-			login_pass  			= masked_ask "Login Password: "
+			login_email 					= ask "Login Email address: "
+			sandbox								= yes? "Is this a sandbox org login: "
+			login_pass  					= masked_ask "Login Password: "
 			login_security_token	= masked_ask "Security Token: "
 			say "If you'd like I can save this login information to this directories .git/config/force.com.config"
 			say "----- PLEASE NOTE, HOWEVER, THAT SAVING THIS INFORMATION IS INSECURE AND IS IN NO WAY ENCRYPTED"
-			save 					= yes? "Should I save this Login information? (y/n) "
+			save 									= yes? "Should I save this Login information? (y/n) "
 
 			if save
 				@login_details = LoginDetails.new(login_email, login_pass, login_security_token, sandbox)
@@ -100,11 +100,12 @@ class MetaForce < Thor
 	######## Clone ############################################################
 	desc "clone", "Pull all MetaData objects from the current org"
 	method_option :reset, :type => :boolean, :aliases => "-r", :required => false, :banner => " Reset stored login information"
-	method_option :dir, :type => :string, :aliases => "-d", :required => true, :banner => " Download to directory", :default => "retrieved"
+	method_option :dir, :type => :string, :aliases => "-d", :required => false, :banner => " Download to directory"
 	def clone
 		login unless @client
 		login unless options[:reset].nil?
 		raise "failed to create connection!" unless @client
+		options[:dir] = ask "Where to download to? " unless options[:dir]
 		result = spinner {
 			metadata_objects = Hash.new
 			@client.metadata_objects.collect { |t| metadata_objects[t[:xml_name].underscore.to_sym] = ["*"] }
